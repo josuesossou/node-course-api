@@ -15,19 +15,25 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.post('/todo', (req, res)=>{
+app.post('/todos', (req, res)=>{
 
     let todo = new Todo({
         text: req.body.text,
     })
 
-    todo.save().then(result=>{
-        res.send(result);
+    todo.save().then(doc=>{
+        res.send(doc);
     }, err=>{
         res.status(400).send(err)
     })
 
-})
+});
+
+app.get('/todos', (req, res)=>{
+    Todo.find().then(todos=>{
+        res.send({todos});
+    }).catch(e => res.send(e));
+});
 
 app.listen(3000, ()=>{
     console.log('server start on port 3000');

@@ -4,18 +4,27 @@ const request = require('supertest');
 const {Todo} = require('./../db/todos');
 const {app} = require('./../server');
 
-beforeEach((done)=>{
-    Todo.remove({}).then(res=>done());
+const todos = [
+    {text: "first todo"},
+    {text: "second todo"}
+];
+
+beforeEach((done) => {
+    Todo.remove({}).then(()=> {
+        Todo.insertMany(todos)
+        done()
+    })
+        // .catch(e=>done(e));
 });
 
-describe('POST /todo', ()=>{
+describe('POST /todos', ()=>{
 
     it('Should add todo to the database', (done)=>{
 
-        let text = "testing the todo";
+        let text = "testing the todos";
 
         request(app)
-            .post('/todo')
+            .post('/todos')
             .send({text})
             .expect(200)
             .expect(res=>{
@@ -25,7 +34,7 @@ describe('POST /todo', ()=>{
 
                 if(err) return done(err);
 
-                Todo.find().then(todo=>{
+                Todo.find({text}).then(todo=>{
                     expect(todo.length).toBe(1);
                     expect(todo[0].text).toBe(text);
                     done();
@@ -34,11 +43,11 @@ describe('POST /todo', ()=>{
             });
     })
 
-    it('Should not add an invalid todo', (done)=>{
-        let text = "testing the todo";
+    it('Should not add an invalid todos', (done)=>{
+        let text = "testing the todos";
 
         request(app)
-            .post('/todo')
+            .post('/todos')
             .send({})
             .expect(400)
             .end((err, res)=>{
@@ -46,11 +55,25 @@ describe('POST /todo', ()=>{
                 if (err) return done(err);
 
                 Todo.find().then(todo=>{
-                    expect(todo.length).toBe(0);
+                    expect(todo.length).toBe(2);
                     done();
                 }).catch(e => done(e))
                 
             })
+    })
+
+});
+
+describe('GEt /todos',()=>{
+
+    it('should get todos', (done)=>{
+        request(app)
+            .get('/todos')
+            .expect(200)
+            .expect((res)=>{
+                expect(res.body.todos.length).toBe(2)
+            })
+            .end(done)
     })
 
 })
