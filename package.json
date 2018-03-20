@@ -9,6 +9,9 @@
     "start": "node server/server.js",
     "watch-start": "nodemon --exec \"npm start\""
   },
+  "engine":{
+    "node":"9.4.0"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
