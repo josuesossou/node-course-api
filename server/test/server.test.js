@@ -113,4 +113,40 @@ describe('GEt /todos/:id',()=>{
             .expect(400)
             .end(done);
     });
+});
+
+describe('DELETE /todos/:id', ()=>{
+
+    it('should successfully remove a todo', (done)=>{
+
+        request(app)
+            .delete(`/todos/${todos[0]._id}`)
+            .expect(200)
+            .expect((res)=>{
+                expect(res.body.todo.text).toBe(todos[0].text)
+            })
+            .end(done)
+
+    })
+
+    it('should return a 404 for a non existing id in database', (done)=>{
+
+        let id = new ObjectId().toHexString();
+
+        request(app)
+            .delete(`/todos/${id}`)
+            .expect(404)
+            .end(done)
+
+    })
+
+    it('should return a 400 for an invalid id', (done)=>{
+
+        request(app)
+            .delete(`/todos/123`)
+            .expect(400)
+            .end(done)
+
+    })
+
 })
