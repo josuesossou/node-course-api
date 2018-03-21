@@ -14,6 +14,7 @@ const _ = require('lodash');
 const {mongoose} = require('./db/mongoose');
 const {Todo} = require('./db/todos');
 const {User}= require('./db/users');
+const {authenticate} = require('./middleware/auth');
 
 const app = express();
 const port = process.env.PORT;
@@ -95,6 +96,31 @@ app.patch('/todos/:id', (req, res)=>{
     }).catch(e => res.status(400).send());
 
 });
+
+
+////Users
+app.post('/users',(req, res)=>{
+
+    let body = _.pick(req.body, ['email', 'password']);
+    let user = new User(body);
+
+    if(!req.body.email || !req.body.password) return res.status(404).send("provide email and password");
+
+    user.save().then(() => {
+
+        return user.generateAuthToken();
+
+    }).then(token => {
+
+        res.header('x-auth', token).send(user);
+
+    }).catch(e => res.status(400).send(e));
+    
+})
+
+app.get('/users/me', authenticate, (req, res)=>{
+    res.send(req.user)
+})
 
 app.listen(port, ()=>{
     console.log(`server start on port ${port}`);
