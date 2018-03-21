@@ -19,11 +19,12 @@ const todos = [
 ];
 
 beforeEach((done) => {
+
     Todo.remove({}).then(()=> {
-        Todo.insertMany(todos)
+        Todo.insertMany(todos);
         done()
-    })
-        // .catch(e=>done(e));
+    }).catch(e=>done());
+   
 });
 
 describe('POST /todos', ()=>{

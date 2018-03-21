@@ -1,3 +1,5 @@
+require('./config/config');
+
 const {ObjectId} = require('mongodb');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -14,7 +16,7 @@ const {Todo} = require('./db/todos');
 const {User}= require('./db/users');
 
 const app = express();
-const port = process.env.PORT || 3000
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
@@ -22,13 +24,13 @@ app.post('/todos', (req, res)=>{
 
     let todo = new Todo({
         text: req.body.text,
-    })
+    });
 
     todo.save().then(doc=>{
         res.send(doc);
     }, err=>{
         res.status(400).send(err)
-    })
+    });
 
 });
 
@@ -54,7 +56,7 @@ app.get('/todos/:id', (req, res)=>{
 
         res.send({todo});
 
-    }).catch(e=>res.status(400).send('bad id'))
+    }).catch(e=>res.status(400).send('bad id'));
 
 });
 
@@ -66,8 +68,8 @@ app.delete('/todos/:id', (req, res)=>{
 
     Todo.findByIdAndRemove(id).then((todo)=>{
         if(!todo)return res.status(404).send("Unable to delete");
-        res.send({todo})
-    }).catch(e=>res.status(400).send(e))
+        res.send({todo});
+    }).catch(e=>res.status(400).send(e));
 
 });
 
@@ -90,9 +92,9 @@ app.patch('/todos/:id', (req, res)=>{
 
         res.send({todo});
         
-    }).catch(e => res.status(400).send())
+    }).catch(e => res.status(400).send());
 
-})
+});
 
 app.listen(port, ()=>{
     console.log(`server start on port ${port}`);
