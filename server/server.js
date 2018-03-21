@@ -1,6 +1,7 @@
 const {ObjectId} = require('mongodb');
 const express = require('express');
 const bodyParser = require('body-parser');
+const _ = require('lodash');
 
 //normal syntax
 // const mongoose = require('./db/mongoose').mongoose;
@@ -69,6 +70,29 @@ app.delete('/todos/:id', (req, res)=>{
     }).catch(e=>res.status(400).send(e))
 
 });
+
+app.patch('/todos/:id', (req, res)=>{
+
+    let id = req.params.id;
+    let body = _.pick(req.body, ["text", "completed"]);
+    
+    if(!ObjectId.isValid(id)) return res.status(400).send(`bad request: ${id} not valid`);
+
+    if(_.isBoolean(body.completed) && body.completed){
+        body.completedAt = new Date().getTime();
+    }else{
+        body.completedAt = null;
+    }
+
+    Todo.findByIdAndUpdate(id, {$set: body}, {new:true}).then(todo=>{
+
+        if (!todo) return res.status(404).send('Unable to update');
+
+        res.send({todo});
+        
+    }).catch(e => res.status(400).send())
+
+})
 
 app.listen(port, ()=>{
     console.log(`server start on port ${port}`);
