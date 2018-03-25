@@ -1,35 +1,50 @@
 const {SHA256} = require('crypto-js');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
+var password = '123abc';
 
-var message = "I love eating ducks";
-var hash = SHA256(message);
+// bcrypt.genSalt(15, (err, salt)=>{
+//     bcrypt.hash(password, salt, (err, hash)=>{
+//         console.log(hash)
+//     })
+// })
 
-var hashjwt = jwt.sign(message, 'secret');
-console.log('Hash JWT',hashjwt);
+////mongoose middleware
 
-var verifyjwt = jwt.verify(hashjwt +2, 'secret')
-console.log(verifyjwt)
+var hashPassword = "$2a$15$FCBLJyNV95s.oIySbu5QFOZuPChGZQl5/RO/3gHWlCS8GhcwrGQd2";
 
-console.log(message);
-console.log(hash.toString());
+bcrypt.compare(password, hashPassword, (err, res)=>{
+    console.log(res)
+})
+// var message = "I love eating ducks";
+// var hash = SHA256(message);
 
-var data = {
-    id: 5
-};
+// var hashjwt = jwt.sign(message, 'secret');
+// console.log('Hash JWT',hashjwt);
 
-var token = {
-    data,
-    hash: SHA256(JSON.stringify(data) + 'myScretMessage').toString()
-}
+// var verifyjwt = jwt.verify(hashjwt +2, 'secret')
+// console.log(verifyjwt)
 
-token.data.id = 10;
-token.hash = SHA256(JSON.stringify(token.data)).toString();
+// console.log(message);
+// console.log(hash.toString());
 
-var veryfiedResult = SHA256(JSON.stringify(data) + 'myScretMessage').toString();
+// var data = {
+//     id: 5
+// };
 
-if(token.hash === veryfiedResult){
-    console.log('safe');
-} else {
-    console.log('Hackers');
-}
+// var token = {
+//     data,
+//     hash: SHA256(JSON.stringify(data) + 'myScretMessage').toString()
+// }
+
+// token.data.id = 10;
+// token.hash = SHA256(JSON.stringify(token.data)).toString();
+
+// var veryfiedResult = SHA256(JSON.stringify(data) + 'myScretMessage').toString();
+
+// if(token.hash === veryfiedResult){
+//     console.log('safe');
+// } else {
+//     console.log('Hackers');
+// }
