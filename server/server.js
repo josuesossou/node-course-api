@@ -1,4 +1,4 @@
-require('./config/config');
+require('./config/config.js');
 
 const {ObjectId} = require('mongodb');
 const express = require('express');
@@ -97,7 +97,6 @@ app.patch('/todos/:id', authenticate, (req, res)=>{
     }).catch(e => res.status(400).send());
 
 });
-
 
 ////Users
 app.post('/users',(req, res)=>{
