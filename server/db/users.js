@@ -75,14 +75,14 @@ UserSchema.statics.findByToken = function (token) {
     try {
         decode = jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
-        return Promise.reject('error from model')
+        return Promise.reject('error from model');
     }
 
     return User.findOne({
         '_id': decode._id,
         'tokens.token': token,
         'tokens.access':'auth'
-    })
+    });
     
 }
 

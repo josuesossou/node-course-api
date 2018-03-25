@@ -99,7 +99,7 @@ app.patch('/todos/:id', authenticate, (req, res)=>{
 });
 
 ////Users
-app.post('/users',(req, res)=>{
+app.post('/users', (req, res)=>{
 
     let body = _.pick(req.body, ['email', 'password']);
     let user = new User(body);
@@ -130,17 +130,15 @@ app.post('/users/login', (req, res)=>{
         return user.generateAuthToken().then(token =>{
             res.header('x-auth', token).send(user);
         });
-    }).catch(err=> res.status(400).send(err));
+    }).catch(err => res.status(400).send(err));
 
 });
 
 app.delete('/users/me/token', authenticate, (req, res)=>{
 
-    let token = req.token;
-
-    req.user.removeToken(token).then(()=>{
+    req.user.removeToken(req.token).then(()=>{
         res.status(200).send()
-    }).catch(e=>{
+    }).catch(e => {
         res.status(400).send()
     });
 
